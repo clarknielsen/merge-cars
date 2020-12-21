@@ -5,8 +5,6 @@
 /[Uu]serSettings/
 [Tt]emp/
 [Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 
@@ -61,7 +59,3 @@ Thumbs.db.meta
 
 # VS Code
 *.vscode
-
-# other
-settings.txt
-build/
