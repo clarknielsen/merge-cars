@@ -11,6 +11,7 @@ public class CanvasController : MonoBehaviour
     private int delay;
     private bool isEnded;
     private bool isStarted;
+    private Rect rect;
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +19,8 @@ public class CanvasController : MonoBehaviour
         delay = 0;
         isEnded = false;
         isStarted = false;
+
+        rect = GetComponent<RectTransform>().rect;
     }
 
     // Update is called once per frame
@@ -42,8 +45,8 @@ public class CanvasController : MonoBehaviour
         {
             delay = 0;
 
-            // randomly generate new confetti
-            Instantiate(confetti, new Vector3(Random.Range(-Screen.width / 2, Screen.width / 2), Screen.height / 2, 0), Quaternion.identity);
+            // randomly generate new confetti within canvas frame
+            Instantiate(confetti, new Vector3(Random.Range(-rect.width / 2, rect.width / 2), rect.height / 2, 0), Quaternion.identity);
         }
     }
 

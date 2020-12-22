@@ -78,7 +78,7 @@ public class CarController : MonoBehaviour
     {
         isDragged = false;
 
-        Destroy(line);
+        Destroy(line.gameObject);
     }
 
     private void OnCollisionEnter(Collision collision)
