@@ -9,6 +9,9 @@ public class CarController : MonoBehaviour
     private Rigidbody rb;
 
     public GameObject policeCar;
+    public GameObject linePrefab;
+    public LineRenderer line;
+
     public bool isDragged;
     public bool isBig;
 
@@ -33,6 +36,10 @@ public class CarController : MonoBehaviour
         screenPoint = Camera.main.WorldToScreenPoint(transform.position);
 
         offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+
+        // create line
+        line = Instantiate(linePrefab, transform.position, Quaternion.identity).GetComponent<LineRenderer>();
+        line.SetPosition(0, transform.position);
     }
 
     private void OnMouseDrag()
@@ -62,11 +69,16 @@ public class CarController : MonoBehaviour
         }
 
         rb.MovePosition(newPosition);
+
+        // adjust position of line
+        line.SetPosition(1, newPosition);
     }
 
     private void OnMouseUp()
     {
         isDragged = false;
+
+        Destroy(line);
     }
 
     private void OnCollisionEnter(Collision collision)
