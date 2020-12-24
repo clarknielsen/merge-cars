@@ -7,11 +7,9 @@ public class CarController : MonoBehaviour
     private Vector3 screenPoint;
     private Vector3 offset;
     private Rigidbody rb;
+    private Transform body;
 
     public GameObject policeCar;
-    public GameObject linePrefab;
-    public LineRenderer line;
-
     public bool isDragged;
     public bool isBig;
 
@@ -19,6 +17,8 @@ public class CarController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        body = transform.Find("Body");
+
         isDragged = false;
         isBig = false;
     }
@@ -33,52 +33,48 @@ public class CarController : MonoBehaviour
     {
         isDragged = true;
 
+        // record initial mouse position
         screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-
         offset = transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-
-        // create line
-        line = Instantiate(linePrefab, transform.position, Quaternion.identity).GetComponent<LineRenderer>();
-        line.SetPosition(0, transform.position);
     }
 
     private void OnMouseDrag()
     {
+        // get newest position of mouse
         Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-
-        // avoid going offscreen
-        if (curScreenPoint.x < 0 || curScreenPoint.x > Screen.width || curScreenPoint.y < 0 || curScreenPoint.y > Screen.height)
-        {
-            return;
-        }
-
         Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-        Vector3 newPosition = new Vector3(Mathf.Round(curPosition.x), transform.position.y, Mathf.Round(curPosition.z));
 
-        // check potential collision
-        float diff = transform.Find("Body").transform.position.x - transform.position.x;
-        Collider[] colliders = Physics.OverlapBox(new Vector3(newPosition.x + diff, 0, newPosition.z - diff), transform.lossyScale / 4, Quaternion.identity);
+        // update rigidbody but keep within confines of grid
+        Vector3 newPosition = new Vector3(
+            Mathf.Clamp(Mathf.Round(curPosition.x), -10, 10 - transform.localScale.x), 
+            transform.position.y,
+            Mathf.Clamp(Mathf.Round(curPosition.z), -9 + transform.localScale.z, 5)
+        );
 
-        foreach (Collider collider in colliders)
+        // rotate in direction
+        if (newPosition.z < transform.position.z)
         {
-            // deny movement
-            if (collider.tag == "Wall")
-            {
-                return;
-            }
+            body.transform.eulerAngles = new Vector3(0, 0, 0);
+        }
+        else if (newPosition.z > transform.position.z)
+        {
+            body.transform.eulerAngles = new Vector3(0, 180, 0);
+        }
+        else if (newPosition.x < transform.position.x)
+        {
+            body.transform.eulerAngles = new Vector3(0, 90, 0);
+        }
+        else if (newPosition.x > transform.position.x)
+        {
+            body.transform.eulerAngles = new Vector3(0, -90, 0);
         }
 
         rb.MovePosition(newPosition);
-
-        // adjust position of line
-        line.SetPosition(1, newPosition);
     }
 
     private void OnMouseUp()
     {
         isDragged = false;
-
-        Destroy(line.gameObject);
     }
 
     private void OnCollisionEnter(Collision collision)
