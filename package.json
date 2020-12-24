@@ -1,0 +1,25 @@
+{
+  "name": "merge-cars",
+  "version": "1.0.0",
+  "description": "Mini-game made with Unity.",
+  "main": "docs/index.html",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "cd docs && http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clarknielsen/merge-cars.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clarknielsen/merge-cars/issues"
+  },
+  "homepage": "https://github.com/clarknielsen/merge-cars#readme",
+  "dependencies": {
+    "http-server": "^0.12.3"
+  }
+}
